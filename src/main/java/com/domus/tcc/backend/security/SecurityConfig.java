@@ -88,6 +88,18 @@ public class SecurityConfig {
                     request.requestMatchers(HttpMethod.PUT, "/moradores/**").hasAnyRole("MORADOR", "SINDICO", "ADMIN");
                     request.requestMatchers(HttpMethod.DELETE, "/moradores/**").hasAnyRole("ADMIN", "SINDICO");
 
+                    request.requestMatchers(HttpMethod.POST, "/convidados").hasRole("MORADOR");
+                    request.requestMatchers(HttpMethod.GET, "/convidados").hasRole("MORADOR");
+                    request.requestMatchers(HttpMethod.PUT, "/convidados/**").hasRole("MORADOR");
+                    request.requestMatchers(HttpMethod.PATCH, "/convidados/**").hasRole("MORADOR");
+
+                    request.requestMatchers(HttpMethod.POST, "/log-convidado").hasAnyRole("PORTEIRO", "AMDIN");
+                    request.requestMatchers(HttpMethod.GET, "/log-convidado").hasAnyRole("PORTEIRO" , "AMIN");
+                    request.requestMatchers(HttpMethod.GET, "/log-convidado/convidados/**").hasRole("PORTEIRO");
+
+                    request.requestMatchers(HttpMethod.POST, "/log-visita").hasRole("PORTEIRO");
+                    request.requestMatchers(HttpMethod.GET, "/log-visita").hasRole("PORTEIRO");
+
                     request.requestMatchers(HttpMethod.POST, "/pessoas-autorizadas").hasAnyRole("MORADOR");
                     request.requestMatchers(HttpMethod.GET, "/pessoas-autorizadas").hasAnyRole("MORADOR", "PORTEIRO", "ADMIN");
                     request.requestMatchers(HttpMethod.PUT, "/pessoas-autorizadas/**").hasAnyRole("MORADOR");

@@ -31,12 +31,23 @@ public class AutenticacaoService implements UserDetailsService{
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        if(repository.findByUsername(username) != null){
-            return repository.findByUsername(username);
-        } else {
-            return repositoryContaAdm.findByUsername(username);
+        String identificador = username == null ? "" : username.trim();
+        if (identificador.isEmpty()) {
+            throw new UsernameNotFoundException("Usuário não encontrado");
         }
 
+        Usuario usuario = repository.findByUsernameIgnoreCase(identificador)
+                .orElse(null);
+        if (usuario != null) {
+            return usuario;
+        }
+
+        UserDetails contaAdm = repositoryContaAdm.findByUsername(identificador);
+        if (contaAdm != null) {
+            return contaAdm;
+        }
+
+        throw new UsernameNotFoundException("Usuário não encontrado");
     }
 
     @Transactional
