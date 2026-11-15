@@ -1,7 +1,7 @@
 package com.domus.tcc.backend.controller;
 
 import com.domus.tcc.backend.dto.request.DadosAtualizarConvidadoDTO;
-import com.domus.tcc.backend.dto.request.DadosCadastrarConvidadoDTO;
+import com.domus.tcc.backend.dto.request.DadosRegistrarConvidadoDTO;
 import com.domus.tcc.backend.dto.response.DadosConvidadoDTO;
 import com.domus.tcc.backend.security.Usuario;
 import com.domus.tcc.backend.services.ConvidadoService;
@@ -24,9 +24,10 @@ public class ConvidadoController {
         this.convidadoService = convidadoService;
     }
 
+
     @PostMapping
     public ResponseEntity<DadosConvidadoDTO> cadastrar(
-        @Valid @RequestBody DadosCadastrarConvidadoDTO dados,
+        @Valid @RequestBody DadosRegistrarConvidadoDTO dados,
         @AuthenticationPrincipal Usuario logado,
         UriComponentsBuilder uriBuilder
     ) {

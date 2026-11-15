@@ -3,7 +3,7 @@ package com.domus.tcc.backend.services;
 import com.domus.tcc.backend.domain.Convidado;
 import com.domus.tcc.backend.domain.Morador;
 import com.domus.tcc.backend.dto.request.DadosAtualizarConvidadoDTO;
-import com.domus.tcc.backend.dto.request.DadosCadastrarConvidadoDTO;
+import com.domus.tcc.backend.dto.request.DadosRegistrarConvidadoDTO;
 import com.domus.tcc.backend.dto.response.DadosConvidadoDTO;
 import com.domus.tcc.backend.exception.AcessoNegadoException;
 import com.domus.tcc.backend.exception.ConvidadoJaCadastradoException;
@@ -30,7 +30,7 @@ public class ConvidadoService {
 
     @PreAuthorize("hasRole('MORADOR')")
     @Transactional
-    public DadosConvidadoDTO cadastrar(DadosCadastrarConvidadoDTO dados, Usuario logado) {
+    public DadosConvidadoDTO cadastrar(DadosRegistrarConvidadoDTO dados, Usuario logado) {
         Morador morador = moradorRepository.findByPessoa_Id(logado.getPessoa().getId())
             .orElseThrow(() -> new EntityNotFoundException("Morador não encontrado."));
 

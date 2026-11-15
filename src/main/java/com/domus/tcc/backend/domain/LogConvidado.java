@@ -25,11 +25,11 @@ public class LogConvidado {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "idLogConvidado")
+    @Column(name = "idLog_visita")
     private Long idLogConvidado;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "convidado_idConvidado", nullable = false)
+    @JoinColumn(name = "convidado_idconvidado", nullable = false)
     private Convidado convidado;
 
     @Column(name = "data_hora_chegada", nullable = false)

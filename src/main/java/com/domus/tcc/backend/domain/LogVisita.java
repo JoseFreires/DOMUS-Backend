@@ -28,7 +28,7 @@ public class LogVisita {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "idLogVisita")
+    @Column(name = "idVisitante")
     private Long idLogVisita;
 
     @Column(nullable = false)

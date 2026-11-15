@@ -2,7 +2,6 @@ package com.domus.tcc.backend.services;
 
 import com.domus.tcc.backend.domain.Convidado;
 import com.domus.tcc.backend.domain.LogConvidado;
-import com.domus.tcc.backend.dto.request.DadosRegistrarLogConvidadoDTO;
 import com.domus.tcc.backend.dto.response.DadosConvidadoDTO;
 import com.domus.tcc.backend.dto.response.DadosLogConvidadoDTO;
 import com.domus.tcc.backend.exception.EntradaBloqueadaException;
@@ -37,8 +36,8 @@ public class LogConvidadoService {
 
     @PreAuthorize("hasRole('PORTEIRO')")
     @Transactional
-    public DadosLogConvidadoDTO registrar(DadosRegistrarLogConvidadoDTO dados, Usuario logado) {
-        Convidado convidado = convidadoRepository.findById(dados.idConvidado())
+    public DadosLogConvidadoDTO registrar(Long idConvidado, Usuario logado) {
+        Convidado convidado = convidadoRepository.findById(idConvidado)
             .orElseThrow(() -> new EntityNotFoundException("Convidado não encontrado."));
 
         if (!Boolean.TRUE.equals(convidado.getAtivo())) {

@@ -1,7 +1,7 @@
 package com.domus.tcc.backend.domain;
 
 import com.domus.tcc.backend.domain.enums.Recorrencia;
-import com.domus.tcc.backend.dto.request.DadosCadastrarConvidadoDTO;
+import com.domus.tcc.backend.dto.request.DadosRegistrarConvidadoDTO;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -53,7 +53,7 @@ public class Convidado {
     @JoinColumn(name = "morador_idMorador", nullable = false)
     private Morador morador;
 
-    public Convidado(DadosCadastrarConvidadoDTO dados, Morador morador) {
+    public Convidado(DadosRegistrarConvidadoDTO dados, Morador morador) {
         this.nome = dados.nome();
         this.cpf = dados.cpf();
         this.telefone = dados.telefone();
