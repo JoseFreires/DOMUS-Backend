@@ -2,6 +2,7 @@ package com.domus.tcc.backend.services;
 
 import com.domus.tcc.backend.domain.LogVisita;
 import com.domus.tcc.backend.domain.Moradia;
+import com.domus.tcc.backend.dto.request.DadosAtualizacaoLogVisitaDTO;
 import com.domus.tcc.backend.dto.request.DadosRegistrarLogVisitaDTO;
 import com.domus.tcc.backend.dto.response.DadosLogVisitaDTO;
 import com.domus.tcc.backend.repository.MoradiaRepository;
@@ -60,5 +61,25 @@ public class LogVisitaService {
             .stream()
             .map(DadosLogVisitaDTO::new)
             .toList();
+    }
+
+    @PreAuthorize("hasRole('PORTEIRO')")
+    @Transactional(readOnly = true)
+    public DadosLogVisitaDTO buscarPorId(Long id) {
+        LogVisita logVisita = logVisitaRepository.findById(id)
+            .orElseThrow(() -> new EntityNotFoundException("Visita não encontrada."));
+
+        return new DadosLogVisitaDTO(logVisita);
+    }
+
+    @PreAuthorize("hasRole('PORTEIRO')")
+    @Transactional
+    public DadosLogVisitaDTO atualizar( Long idLogVisita, DadosAtualizacaoLogVisitaDTO dados) {
+        LogVisita logVisita = logVisitaRepository.findById(idLogVisita)
+            .orElseThrow(() -> new EntityNotFoundException("Visita não encontrada."));
+
+        logVisita.setNome(dados.nome());
+        logVisita.setTipoVisita(dados.tipoVisita());
+        return new DadosLogVisitaDTO(logVisitaRepository.save(logVisita));
     }
 }
