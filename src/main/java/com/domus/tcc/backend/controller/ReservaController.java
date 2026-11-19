@@ -21,6 +21,8 @@ import java.net.URI;
 import java.time.LocalDate;
 import java.util.List;
 
+import static org.springframework.data.jpa.domain.AbstractPersistable_.id;
+
 @RestController
 @RequestMapping("/reservas")
 public class ReservaController {
@@ -107,6 +109,25 @@ public class ReservaController {
     public ResponseEntity<DadosConsultaEspacoDTO> encontrarEspacoPorId(@PathVariable Long id) {
         return ResponseEntity.ok(espacoCondominialService.buscarEspacoId(id));
     }
+
+    @GetMapping
+    public ResponseEntity <List<DadosConsultaReservaDTO>> encontrarReservadoDia(
+            @RequestParam
+            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+            LocalDate data,
+            @AuthenticationPrincipal UserDetails autenticado
+    ) {
+        return ResponseEntity.ok(reservaService.listarReservasDoDia(data, autenticado));
+    }
+
+    @GetMapping("/solicitacoes")
+    public ResponseEntity <List<DadosConsultaReservaDTO>> buscarSolicitacoes(
+            @AuthenticationPrincipal UserDetails autenticado
+
+    ) {
+        return ResponseEntity.ok(reservaService.listarSolicitacoes(autenticado));
+    }
+
 
     private void exigirDecisaoEfetuada(boolean efetuada) {
         if (!efetuada) {

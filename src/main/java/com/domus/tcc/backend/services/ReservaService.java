@@ -55,7 +55,7 @@ public class ReservaService {
     private  UsuarioRepository usuarioRepository;
 
     @Autowired
-    private  Clock clock;
+    private Clock clock;
 
     @Autowired
     private ApplicationEventPublisher applicationEventPublisher;
@@ -70,6 +70,30 @@ public class ReservaService {
                 .map(DadosConsultaEspacoDTO::new)
                 .toList();
     }
+
+
+    //GET Solicitação
+    @Transactional(readOnly = true)
+    public List<DadosConsultaReservaDTO> listarSolicitacoes(UserDetails autenticado) {
+        exigirPapel(autenticado, "ROLE_SINDICO");
+        return reservaRepository.findAll()
+                .stream()
+                .filter(reservaCondominial -> reservaCondominial.getStatusReserva().equals(StatusReserva.RESERVADA))
+                .map(DadosConsultaReservaDTO::new)
+                .toList();
+
+    }
+
+    //GET Reservas Por Data
+    @Transactional(readOnly = true)
+    public List<DadosConsultaReservaDTO> listarReservasDoDia(LocalDate data, UserDetails autenticado) {
+        exigirPapel(autenticado, "ROLE_SINDICO");
+        return reservaRepository.findByData(data)
+                .stream()
+                .map(DadosConsultaReservaDTO::new)
+                .toList();
+    }
+
 
     //POST enorme
     @Transactional
@@ -86,9 +110,11 @@ public class ReservaService {
 
         EspacoCondominial espaco = espacoRepository.findByIdForUpdate(idEspaco)
                 .orElseThrow(() -> naoEncontrado("Espaço não encontrado"));
+
         if (!Boolean.TRUE.equals(espaco.getAtivo())) {
             throw conflito("Não é possível reservar um espaço inativo");
         }
+
         validarCapacidade(dados.quantidadeConvidados(), espaco);
 
         LocalDate inicioSemana = dataReserva

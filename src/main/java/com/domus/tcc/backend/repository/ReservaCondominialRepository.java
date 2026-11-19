@@ -64,4 +64,12 @@ public interface ReservaCondominialRepository extends JpaRepository<ReservaCondo
     List<ReservaCondominial> findConfirmadasVencidasForUpdate(
             @Param("status") StatusReserva status,
             @Param("data") LocalDate data);
+
+
+    @Query("""
+        SELECT r
+        FROM ReservaCondominial r
+        WHERE r.dataReserva = :data
+    """)
+    List<ReservaCondominial> findByData(@Param("data") LocalDate data);
 }
