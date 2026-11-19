@@ -76,6 +76,19 @@ public class SecurityConfig {
                     request.requestMatchers(HttpMethod.GET, "/chamados", "/chamados/*")
                             .hasAnyRole("MORADOR", "SINDICO");
 
+                    request.requestMatchers(HttpMethod.POST, "/reservas").hasRole("MORADOR");
+                    request.requestMatchers(HttpMethod.GET, "/reservas/minhas").hasRole("MORADOR");
+                    request.requestMatchers(HttpMethod.GET, "/reservas/*")
+                            .hasAnyRole("MORADOR", "SINDICO", "ADMIN");
+                    request.requestMatchers(HttpMethod.PUT, "/reservas/*/confirmar", "/reservas/*/negar")
+                            .hasAnyRole("SINDICO", "ADMIN");
+                    request.requestMatchers(HttpMethod.PUT, "/reservas/*/cancelar", "/reservas/*")
+                            .hasRole("MORADOR");
+                    request.requestMatchers(HttpMethod.GET, "/reservas")
+                            .hasAnyRole("SINDICO", "ADMIN");
+                    request.requestMatchers(HttpMethod.GET, "/reservas/solicitacoes")
+                            .hasAnyRole("SINDICO", "ADMIN");
+
                     request.requestMatchers(HttpMethod.POST, "/encomendas").hasAnyRole("PORTEIRO", "ADMIN");
                     request.requestMatchers(HttpMethod.GET, "/encomendas").hasAnyRole("PORTEIRO", "MORADOR", "SINDICO", "ADMIN");
                     request.requestMatchers(HttpMethod.PUT, "/encomendas/**").hasAnyRole("PORTEIRO", "ADMIN");
