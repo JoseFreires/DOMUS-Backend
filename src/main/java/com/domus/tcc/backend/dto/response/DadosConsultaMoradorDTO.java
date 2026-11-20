@@ -2,18 +2,16 @@ package com.domus.tcc.backend.dto.response;
 
 
 import java.time.LocalDate;
+import java.util.List;
 
 import com.domus.tcc.backend.security.Usuario;
 
 public record DadosConsultaMoradorDTO(
         Long idMorador,
         Long idPessoa,
-        Long idMoradia,
-        Long idBloco,
+        List<DadosConsultaMoradorMoradiaDTO> moradias,
         String nomeCompleto,
         String email,
-        String numeroApartamento,
-        String bloco,
         String cpf,
         LocalDate dataChegada,
         LocalDate dataNascimento,
@@ -25,12 +23,11 @@ public record DadosConsultaMoradorDTO(
         this(
                 usuario.getPessoa().getMorador().getId(),
                 usuario.getPessoa().getId(),
-                usuario.getPessoa().getMorador().getMoradia().getId(),
-                usuario.getPessoa().getMorador().getMoradia().getBloco().getId(),
+                usuario.getPessoa().getMorador().getMoradias().stream()
+                        .map(DadosConsultaMoradorMoradiaDTO::new)
+                        .toList(),
                 usuario.getPessoa().getNomeCompleto(),
                 usuario.getPessoa().getEmail(),
-                usuario.getPessoa().getMorador().getMoradia().getNumero(),
-                usuario.getPessoa().getMorador().getMoradia().getBloco().getNome_torre(),
                 usuario.getPessoa().getCpf(),
                 usuario.getPessoa().getMorador().getDataChegada(),
                 usuario.getPessoa().getDataNascimento(),

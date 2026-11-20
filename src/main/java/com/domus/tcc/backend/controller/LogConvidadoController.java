@@ -23,11 +23,13 @@ public class LogConvidadoController {
     }
 
     @PostMapping("/morador/{moradorId}/convidados/{id}")
-    public ResponseEntity<DadosLogConvidadoDTO> registrar(@PathVariable Long id,
+    public ResponseEntity<DadosLogConvidadoDTO> registrar(
+        @PathVariable Long moradorId,
+        @PathVariable Long id,
         @AuthenticationPrincipal Usuario logado,
         UriComponentsBuilder uriBuilder
     ) {
-        DadosLogConvidadoDTO dto = logConvidadoService.registrar(id, logado);
+        DadosLogConvidadoDTO dto = logConvidadoService.registrar(moradorId, id, logado);
         var uri = uriBuilder.path("/log-convidado/{id}").buildAndExpand(dto.idLogConvidado()).toUri();
         return ResponseEntity.created(uri).body(dto);
     }
@@ -35,6 +37,11 @@ public class LogConvidadoController {
     @GetMapping
     public ResponseEntity<List<DadosLogConvidadoDTO>> listar() {
         return ResponseEntity.ok(logConvidadoService.listar());
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<DadosLogConvidadoDTO> buscarPorId(@PathVariable Long id) {
+        return ResponseEntity.ok(logConvidadoService.buscarPorId(id));
     }
 
     @GetMapping("/morador/{moradorId}/convidados")

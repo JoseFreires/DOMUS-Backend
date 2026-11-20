@@ -13,7 +13,7 @@ public record DadosConsultaEncomendaDTO(
         String status,
         String nomeMorador,    // Antes: nomeDestinatario
         String nomePorteiroRecebedor, // Antes: turnoPorteiro (não existe mais turno na tabela usuario)
-        String numeroApartamento,
+        List<DadosConsultaMoradorMoradiaDTO> moradias,
         String emailDestinatario,
         String tokenEncomenda,
         LocalDateTime dataHoraRecebido,
@@ -33,7 +33,11 @@ public record DadosConsultaEncomendaDTO(
             encomenda.getStatusEncomenda().toString(),
             encomenda.getMoradorDestinatario().getNomeCompleto(), // Pega o nome do Usuario (Morador)
             encomenda.getPorteiro().getPessoa().getNomeCompleto(),// Pega o nome do Usuario (Porteiro)
-            encomenda.getMoradorDestinatario().getMorador().getMoradia().getNumero(),
+            encomenda.getMoradorDestinatario().getMorador() == null
+                    ? List.of()
+                    : encomenda.getMoradorDestinatario().getMorador().getMoradias().stream()
+                        .map(DadosConsultaMoradorMoradiaDTO::new)
+                        .toList(),
             encomenda.getMoradorDestinatario().getEmail(),
             encomenda.getToken(),
             encomenda.getDataHoraRecebido(),

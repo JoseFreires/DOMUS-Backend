@@ -22,8 +22,10 @@ import org.springframework.context.ApplicationEventPublisher;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -58,8 +60,9 @@ class LogConvidadoServiceTest {
         moradia.setBloco(bloco);
 
         Morador morador = new Morador();
+        morador.setId(7L);
         morador.setPessoa(pessoaMorador);
-        morador.setMoradia(moradia);
+        morador.setMoradias(java.util.List.of(moradia));
 
         Convidado convidado = new Convidado();
         convidado.setIdConvidado(12L);
@@ -79,7 +82,7 @@ class LogConvidadoServiceTest {
         when(logConvidadoRepository.save(any(LogConvidado.class)))
             .thenAnswer(invocation -> invocation.getArgument(0));
 
-        logConvidadoService.registrar(12L, logado);
+        logConvidadoService.registrar(7L, 12L, logado);
 
         ArgumentCaptor<ConvidadoChegouEvent> eventoCaptor =
             ArgumentCaptor.forClass(ConvidadoChegouEvent.class);
@@ -91,4 +94,21 @@ class LogConvidadoServiceTest {
         assertEquals("101 - Torre A", evento.moradia());
         assertTrue(evento.dataHoraChegada().matches("\\d{2}/\\d{2}/\\d{4} \\d{2}:\\d{2}"));
     }
+
+    @Test
+    void naoRegistraConvidadoDeOutroMorador() {
+        Morador morador = new Morador();
+        morador.setId(8L);
+        Convidado convidado = new Convidado();
+        convidado.setMorador(morador);
+        when(convidadoRepository.findById(12L)).thenReturn(Optional.of(convidado));
+
+        assertThrows(
+            jakarta.persistence.EntityNotFoundException.class,
+            () -> logConvidadoService.registrar(7L, 12L, new Usuario())
+        );
+
+        verify(logConvidadoRepository, never()).save(any(LogConvidado.class));
+    }
+
 }

@@ -55,6 +55,22 @@ public class ConvidadoService {
     }
 
     @PreAuthorize("hasRole('MORADOR')")
+    @Transactional(readOnly = true)
+    public DadosConvidadoDTO buscarPorId(Long idConvidado, Usuario logado) {
+        Morador moradorLogado = moradorRepository.findByPessoa_Id(logado.getPessoa().getId())
+            .orElseThrow(() -> new EntityNotFoundException("Morador não encontrado."));
+
+        Convidado convidado = convidadoRepository.findById(idConvidado)
+            .orElseThrow(() -> new EntityNotFoundException("Convidado não encontrado."));
+
+        if (!convidado.getMorador().getId().equals(moradorLogado.getId())) {
+            throw new AcessoNegadoException("Você não pode consultar um convidado de outro morador.");
+        }
+
+        return new DadosConvidadoDTO(convidado);
+    }
+
+    @PreAuthorize("hasRole('MORADOR')")
     @Transactional
     public DadosConvidadoDTO atualizar(Long idConvidado, DadosAtualizarConvidadoDTO dados, Usuario logado) {
         Morador moradorLogado = moradorRepository.findByPessoa_Id(logado.getPessoa().getId())
@@ -94,6 +110,23 @@ public class ConvidadoService {
         }
 
         convidado.setAtivo(false);
+        return new DadosConvidadoDTO(convidadoRepository.save(convidado));
+    }
+
+    @PreAuthorize("hasRole('MORADOR')")
+    @Transactional
+    public DadosConvidadoDTO ativar(Long idConvidado, Usuario logado) {
+        Morador moradorLogado = moradorRepository.findByPessoa_Id(logado.getPessoa().getId())
+            .orElseThrow(() -> new EntityNotFoundException("Morador não encontrado."));
+
+        Convidado convidado = convidadoRepository.findById(idConvidado)
+            .orElseThrow(() -> new EntityNotFoundException("Convidado não encontrado."));
+
+        if (!convidado.getMorador().getId().equals(moradorLogado.getId())) {
+            throw new AcessoNegadoException("Você não pode ativar um convidado de outro morador.");
+        }
+
+        convidado.setAtivo(true);
         return new DadosConvidadoDTO(convidadoRepository.save(convidado));
     }
 }

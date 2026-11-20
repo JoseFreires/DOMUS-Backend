@@ -24,7 +24,7 @@ public record DadosConsultaPessoaAutorizadaDTO(
                 pessoaAutorizada.getCpf(),
                 pessoaAutorizada.getMorador().getId(),
                 pessoaAutorizada.getMorador().getPessoa().getNomeCompleto(),
-                pessoaAutorizada.getMorador().getMoradia().getNumero()
+                null
 
 
         );

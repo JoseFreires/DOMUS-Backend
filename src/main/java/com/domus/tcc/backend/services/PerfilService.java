@@ -8,6 +8,7 @@ import com.domus.tcc.backend.domain.Pessoa;
 import com.domus.tcc.backend.domain.Porteiro;
 import com.domus.tcc.backend.dto.request.DadosAtualizacaoPerfilDTO;
 import com.domus.tcc.backend.dto.response.DadosPerfilResponseDTO;
+import com.domus.tcc.backend.dto.response.DadosConsultaMoradorMoradiaDTO;
 import com.domus.tcc.backend.repository.ContaAdmRepository;
 import com.domus.tcc.backend.repository.PessoaRepository;
 import com.domus.tcc.backend.repository.UsuarioRepository;
@@ -160,7 +161,7 @@ public class PerfilService {
 
     private DadosPerfilResponseDTO.Morador montarPerfilMorador(Usuario usuario, Pessoa pessoa) {
         Morador morador = pessoa.getMorador();
-        if (morador == null || morador.getMoradia() == null || morador.getMoradia().getBloco() == null) {
+        if (morador == null || morador.getMoradias().isEmpty()) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Dados de morador não encontrados");
         }
         return new DadosPerfilResponseDTO.Morador(
@@ -174,10 +175,9 @@ public class PerfilService {
                 pessoa.getDataNascimento(),
                 pessoa.getFotoPerfil(),
                 morador.getDataChegada(),
-                morador.getMoradia().getId(),
-                morador.getMoradia().getBloco().getId(),
-                morador.getMoradia().getNumero(),
-                morador.getMoradia().getBloco().getNome_torre()
+                morador.getMoradias().stream()
+                        .map(DadosConsultaMoradorMoradiaDTO::new)
+                        .toList()
         );
     }
 
