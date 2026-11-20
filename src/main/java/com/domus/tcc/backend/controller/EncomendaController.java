@@ -83,9 +83,10 @@ public class EncomendaController {
     @PutMapping("/{id}/entrega")
     public ResponseEntity<Void> registrarEntrega(
             @PathVariable Long id,
-            @Valid @RequestBody DadosAtualizarStatusEncomendaDTO dados) {
+            @Valid @RequestBody DadosAtualizarStatusEncomendaDTO dados,
+            @AuthenticationPrincipal Usuario logado) {
 
-        portariaService.registrarEntregaEncomenda(id, dados);
+        portariaService.registrarEntregaEncomenda(id, dados, logado);
         return ResponseEntity.noContent().build();
     }
 
