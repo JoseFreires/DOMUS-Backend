@@ -1,0 +1,2 @@
+ALTER TABLE pessoa
+MODIFY COLUMN foto_perfil VARCHAR(255) NOT NULL;
