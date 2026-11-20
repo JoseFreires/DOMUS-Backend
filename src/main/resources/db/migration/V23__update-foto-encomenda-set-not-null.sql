@@ -1,0 +1,2 @@
+ALTER TABLE encomenda
+MODIFY COLUMN foto_encomenda VARCHAR(255) NOT NULL;
