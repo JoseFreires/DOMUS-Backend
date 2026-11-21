@@ -64,6 +64,7 @@ public class PortariaService {
             .orElseThrow(() -> new EntityNotFoundException("Porteiro não encontrado"));
 
 
+
       String fotoUrl = null;
         if (arquivo != null && !arquivo.isEmpty()) {
             try {
@@ -74,6 +75,7 @@ public class PortariaService {
         }
 
         var encomenda = new Encomenda(dados, porteiro, pessoa, gerarTokenEncomenda(), fotoUrl);
+        encomenda.setStatusEncomenda(StatusEncomenda.RECEBIDA);
         encomendaRepository.save(encomenda);
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
@@ -111,10 +113,13 @@ public class PortariaService {
 
 
     @Transactional
-    public void registrarEntregaEncomenda(Long idEncomenda, DadosAtualizarStatusEncomendaDTO dados) {
+    public void registrarEntregaEncomenda(Long idEncomenda, DadosAtualizarStatusEncomendaDTO dados, Usuario logado) {
 
         var encomenda = encomendaRepository.findById(idEncomenda)
                 .orElseThrow(() -> new RuntimeException("Encomenda não encontrada!"));
+
+        var porteiroRemetente = usuarioRepository.findById(logado.getId())
+                .orElseThrow(() -> new EntityNotFoundException("Porteiro não encontrado"));
 
         if (encomenda.getStatusEncomenda() == StatusEncomenda.ENTREGUE) {
             throw new RuntimeException("Esta encomenda já consta como Retirada!");
@@ -123,6 +128,8 @@ public class PortariaService {
         encomenda.setStatusEncomenda(StatusEncomenda.ENTREGUE);
         encomenda.setDataHoraRetirado(LocalDateTime.now());
         encomenda.setTipoRetirada(dados.tipoRetirada());
+        encomenda.setPorteiroRemetente(porteiroRemetente);
+        encomenda.setNomeRecebedor(dados.nomeRecebedor());
 
         encomendaRepository.save(encomenda);
         if (dados.tipoRetirada() == TipoRetirada.TERCEIRO) {

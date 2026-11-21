@@ -1,6 +1,7 @@
 package com.domus.tcc.backend.dto.response;
 
 import java.time.LocalDate;
+import java.util.List;
 
 import com.domus.tcc.backend.domain.enums.TurnoPorteiro;
 
@@ -23,10 +24,7 @@ public sealed interface DadosPerfilResponseDTO permits
             LocalDate dataNascimento,
             String fotoPerfil,
             LocalDate dataChegada,
-            Long idMoradia,
-            Long idBloco,
-            String numeroApartamento,
-            String bloco
+            List<DadosConsultaMoradorMoradiaDTO> moradias
     ) implements DadosPerfilResponseDTO {
         @Override
         public String papel() {

@@ -98,6 +98,7 @@ public class AvisoService {
             List<String> emailsMoradores = moradores.stream()
                     .map(morador -> morador.getPessoa().getEmail())
                     .filter(email -> email != null && !email.isBlank())
+                    .distinct()
                     .toList();
             applicationEventPublisher.publishEvent(new AvisoRegistradoEvent(
                     emailsMoradores,

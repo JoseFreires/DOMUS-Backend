@@ -42,9 +42,11 @@ public class LogConvidadoService {
 
     @PreAuthorize("hasRole('PORTEIRO')")
     @Transactional
-    public DadosLogConvidadoDTO registrar(Long idConvidado, Usuario logado) {
+    public DadosLogConvidadoDTO registrar(Long moradorId, Long idConvidado, Usuario logado) {
         Convidado convidado = convidadoRepository.findById(idConvidado)
             .orElseThrow(() -> new EntityNotFoundException("Convidado não encontrado."));
+
+        validarMoradorDoConvidado(convidado, moradorId);
 
         if (!Boolean.TRUE.equals(convidado.getAtivo())) {
             throw new EntradaBloqueadaException("Entrada bloqueada: convidado inativo.");
@@ -58,12 +60,15 @@ public class LogConvidadoService {
         LogConvidado logSalvo = logConvidadoRepository.save(logConvidado);
 
         var morador = convidado.getMorador();
-        var moradia = morador.getMoradia();
+        String moradias = morador.getMoradias().stream()
+            .map(moradia -> moradia.getNumero() + " - " + moradia.getBloco().getNome_torre())
+            .distinct()
+            .collect(java.util.stream.Collectors.joining(", "));
         eventPublisher.publishEvent(new ConvidadoChegouEvent(
             morador.getPessoa().getNomeCompleto(),
             morador.getPessoa().getEmail(),
             convidado.getNome(),
-            moradia.getNumero() + " - " + moradia.getBloco().getNome_torre(),
+            moradias,
             dataHoraChegada.format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm"))
         ));
 
@@ -81,10 +86,25 @@ public class LogConvidadoService {
 
     @PreAuthorize("hasRole('PORTEIRO')")
     @Transactional(readOnly = true)
+    public DadosLogConvidadoDTO buscarPorId(Long id) {
+        LogConvidado logConvidado = logConvidadoRepository.findById(id)
+            .orElseThrow(() -> new EntityNotFoundException("Log de convidado não encontrado."));
+
+        return new DadosLogConvidadoDTO(logConvidado);
+    }
+
+    @PreAuthorize("hasRole('PORTEIRO')")
+    @Transactional(readOnly = true)
     public List<DadosConvidadoDTO> listarConvidadosPorMorador(Long moradorId) {
         return convidadoRepository.findByMoradorIdAndAtivoTrue(moradorId)
             .stream()
             .map(DadosConvidadoDTO::new)
             .toList();
+    }
+
+    private void validarMoradorDoConvidado(Convidado convidado, Long moradorId) {
+        if (!convidado.getMorador().getId().equals(moradorId)) {
+            throw new EntityNotFoundException("Convidado não encontrado para o morador informado.");
+        }
     }
 }

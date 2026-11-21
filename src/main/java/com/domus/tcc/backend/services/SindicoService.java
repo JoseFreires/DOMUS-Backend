@@ -1,6 +1,7 @@
 package com.domus.tcc.backend.services;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 import com.domus.tcc.backend.dto.response.*;
@@ -72,9 +73,12 @@ public class SindicoService {
     @Transactional
     public DadosConsultaMoradorDTO registrarMorador(DadosRegistrarMoradorDTO dados, MultipartFile arquivo) {
 
-        //Buscando a moradia para associar (como tinhaos falado nas reuniões moradia etc já vai ter cadastro)
-        Moradia moradia = moradiaRepository.findById(dados.idMoradia())
-                .orElseThrow(() -> new EntityNotFoundException("Moradia/Apartamento não encontrado no sistema."));
+        List<Moradia> moradias = new ArrayList<>();
+        for (Long idMoradia : dados.idMoradias()) {
+            Moradia moradia = moradiaRepository.findById(idMoradia)
+                    .orElseThrow(() -> new EntityNotFoundException("Moradia/Apartamento não encontrado no sistema."));
+            moradias.add(moradia);
+        }
 
         // Agora o papel é fixo então ele busca no banco
         Papel papelMorador = papelRepository.findByNomePapel("ROLE_MORADOR")
@@ -93,7 +97,7 @@ public class SindicoService {
         Pessoa pessoa = new Pessoa(dados.pessoa(), fotoUrl);
 
         //Instancia de Morador (Não é mais um papel)
-        Morador morador = new Morador(dados, moradia);
+        Morador morador = new Morador(dados, moradias);
 
         // Inserindo composição
         morador.setPessoa(pessoa);
@@ -209,10 +213,22 @@ public class SindicoService {
         var morador = pessoa.getMorador();
 
 
-        if(dados.moradiaIdMoradia() != null){
-            var novaMoradia = moradiaRepository.findById(dados.moradiaIdMoradia())
+        if (dados.removerMoradiaIdMoradia() != null) {
+            Moradia moradiaRemovida = moradiaRepository.findById(dados.removerMoradiaIdMoradia())
+                    .orElseThrow(() -> new EntityNotFoundException("Moradia não encontrada!"));
+            morador.getMoradias().remove(moradiaRemovida);
+        }
+
+        Long adicionarMoradiaId = dados.adicionarMoradiaIdMoradia();
+        if (adicionarMoradiaId == null) {
+            adicionarMoradiaId = dados.moradiaIdMoradia();
+        }
+        if (adicionarMoradiaId != null) {
+            Moradia moradiaAdicionada = moradiaRepository.findById(adicionarMoradiaId)
                     .orElseThrow(() -> new EntityNotFoundException("Nova moradia não encontrada!"));
-            morador.setMoradia(novaMoradia);
+            if (!morador.getMoradias().contains(moradiaAdicionada)) {
+                morador.getMoradias().add(moradiaAdicionada);
+            }
         }
 
         if(dados.nomeCompleto() != null){

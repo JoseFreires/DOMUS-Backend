@@ -51,6 +51,9 @@ public class Encomenda {
     @Column(name = "foto_encomenda")
     private String fotoEncomenda;
 
+    @Column(name = "nome_recebedor")
+    private String nomeRecebedor;
+
     @Column(name = "status")
     @Enumerated(EnumType.STRING)
     private StatusEncomenda statusEncomenda;
@@ -70,6 +73,10 @@ public class Encomenda {
     @JoinColumn(name = "id_pessoa_destinatario", nullable = false)
     private Pessoa moradorDestinatario;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_usuario_porteiro_entrega")
+    private Usuario porteiroRemetente;
+
     // Construtor atualizado
     public Encomenda(DadosRegistrarEncomendaDTO dados, Usuario porteiro, Pessoa moradorDestinatario, String token, String fotoEncomenda) {
         this.nomePacote = dados.nomePacote();
@@ -80,6 +87,8 @@ public class Encomenda {
         this.moradorDestinatario = moradorDestinatario;
         this.fotoEncomenda = fotoEncomenda; 
         this.token = token;
+        this.porteiroRemetente = null;
+        this.nomeRecebedor = null;
     }
 
 }

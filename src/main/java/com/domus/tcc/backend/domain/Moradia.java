@@ -29,8 +29,7 @@ public class Moradia {
     private Bloco bloco;
 
     // Uma moradia pode ter vários moradores (família, inquilinos)
-    // O 'mappedBy' aponta para o nome do atributo 'moradia' dentro da classe Morador
-    @OneToMany(mappedBy = "moradia")
+    @ManyToMany(mappedBy = "moradias")
     private List<Morador> moradores = new ArrayList<>();
 
     public Long getId() {

@@ -15,7 +15,8 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
@@ -40,11 +41,13 @@ public class Morador {
     @Column(name = "data_saida")
     private LocalDateTime dataSaida;
 
-    // Relacionamento com a Moradia (Apartamento/Casa)
-    // Muitos moradores podem pertencer a uma moradia
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "moradia_idMoradia", nullable = false)
-    private Moradia moradia;
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+            name = "morador_moradia",
+            joinColumns = @JoinColumn(name = "morador_idMorador"),
+            inverseJoinColumns = @JoinColumn(name = "moradia_idMoradia")
+    )
+    private List<Moradia> moradias = new ArrayList<>();
 
     @OneToOne
     @JoinColumn(name = "Pessoa_idPessoa", nullable = false, unique = true)
@@ -55,9 +58,9 @@ public class Morador {
     private List<PessoaAutorizada> pessoasAutorizadas = new ArrayList<>();
 
 
-    public Morador(DadosRegistrarMoradorDTO dados, Moradia moradia) {
+    public Morador(DadosRegistrarMoradorDTO dados, List<Moradia> moradias) {
         this.dataChegada = dados.dataChegada();
-        this.moradia = moradia;
+        this.moradias = new ArrayList<>(moradias);
     }
 
     public Morador(){

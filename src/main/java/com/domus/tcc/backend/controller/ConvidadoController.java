@@ -41,6 +41,14 @@ public class ConvidadoController {
         return ResponseEntity.ok(convidadoService.listar(logado));
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<DadosConvidadoDTO> buscarPorId(
+        @PathVariable Long id,
+        @AuthenticationPrincipal Usuario logado
+    ) {
+        return ResponseEntity.ok(convidadoService.buscarPorId(id, logado));
+    }
+
     @PutMapping("/{id}")
     public ResponseEntity<DadosConvidadoDTO> atualizar(
         @PathVariable Long id,
@@ -54,5 +62,14 @@ public class ConvidadoController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void inativar(@PathVariable Long id, @AuthenticationPrincipal Usuario logado) {
         convidadoService.inativar(id, logado);
+    }
+
+    @PatchMapping("/{id}/ativar")
+    public ResponseEntity<DadosConvidadoDTO> ativar(
+        @PathVariable Long id,
+        @AuthenticationPrincipal Usuario logado
+    ) {
+
+        return ResponseEntity.ok(convidadoService.ativar(id, logado));
     }
 }

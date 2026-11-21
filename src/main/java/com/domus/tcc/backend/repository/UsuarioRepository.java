@@ -30,7 +30,7 @@ public interface UsuarioRepository extends JpaRepository<Usuario, Long>{
             SELECT u FROM Usuario u
             JOIN FETCH u.pessoa p
             LEFT JOIN FETCH p.morador m
-            LEFT JOIN FETCH m.moradia moradia
+            LEFT JOIN FETCH m.moradias moradia
             LEFT JOIN FETCH moradia.bloco
             LEFT JOIN FETCH p.porteiro
             WHERE u.id = :id

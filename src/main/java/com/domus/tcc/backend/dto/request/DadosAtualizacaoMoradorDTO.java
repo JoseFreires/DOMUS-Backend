@@ -10,6 +10,10 @@ public record DadosAtualizacaoMoradorDTO(
 
         Long moradiaIdMoradia,
 
+        Long adicionarMoradiaIdMoradia,
+
+        Long removerMoradiaIdMoradia,
+
         String nomeCompleto,
 
         String telefone,

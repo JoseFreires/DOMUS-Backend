@@ -15,11 +15,7 @@ public record   DadosRegistrarEncomendaDTO(
 
     @NotBlank(message = "O nome do pacote é obrigatório")
     String nomePacote,
-
-
-    @NotNull(message = "O status é obrigatório")
-    StatusEncomenda status,
-
+    
     //Adicionei o email aqui e tirei Morador
     @NotBlank @Email
     String emailDestinatario,
