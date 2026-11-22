@@ -19,7 +19,8 @@ public record DadosConsultaReservaDTO(
         Long idMorador,
         String nomeMorador,
         String criadaEm,
-        String canceladaEm
+        String canceladaEm,
+        String fotoEspaco
 ) {
     private static final ZoneId FUSO_SAO_PAULO = ZoneId.of("America/Sao_Paulo");
 
@@ -35,7 +36,8 @@ public record DadosConsultaReservaDTO(
                 reserva.getMorador().getId(),
                 reserva.getMorador().getPessoa().getNomeCompleto(),
                 formatarEmSaoPaulo(reserva.getCriadaEm()),
-                formatarEmSaoPaulo(reserva.getCanceladaEm())
+                formatarEmSaoPaulo(reserva.getCanceladaEm()),
+                reserva.getEspaco().getFotoEspaco()
         );
     }
 
