@@ -17,6 +17,7 @@ public record DadosConsultaReservaDTO(
         Long idEspaco,
         String nomeEspaco,
         Long idMorador,
+        String NomeMorador,
         String criadaEm,
         String canceladaEm
 ) {
@@ -32,6 +33,7 @@ public record DadosConsultaReservaDTO(
                 reserva.getEspaco().getIdEspacoCondominial(),
                 reserva.getEspaco().getNomeEspaco(),
                 reserva.getMorador().getId(),
+                reserva.getMorador().getPessoa().getNomeCompleto(),
                 formatarEmSaoPaulo(reserva.getCriadaEm()),
                 formatarEmSaoPaulo(reserva.getCanceladaEm())
         );
