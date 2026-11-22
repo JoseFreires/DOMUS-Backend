@@ -17,7 +17,7 @@ public record DadosConsultaReservaDTO(
         Long idEspaco,
         String nomeEspaco,
         Long idMorador,
-        String NomeMorador,
+        String nomeMorador,
         String criadaEm,
         String canceladaEm
 ) {
